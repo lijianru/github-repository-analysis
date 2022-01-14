@@ -1,7 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import logo from './logo.svg';
+import { Octokit } from 'octokit';
 
+const octokit = new Octokit();
 function App() {
+  useEffect(() => {
+    octokit.request('GET /repos/{owner}/{repo}/contributors', {
+      owner: 'octocat',
+      repo: 'hello-world',
+    });
+  }, []);
   return (
     <div className="App">
       <header className="App-header">
