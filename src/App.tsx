@@ -1,48 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { Layout, Select, Table } from 'antd';
+import React, { ChangeEventHandler, useEffect, useState } from 'react';
+import { Layout, Select, Table, Typography, Input, Tag, message, Button } from 'antd';
 import './App.css';
 import { getRepoListInfo, RepoInfoResponse } from './service';
 import { ColumnsType } from 'antd/es/table';
 import { format } from 'date-fns';
 
 const { Header, Footer, Content } = Layout;
+const { Title } = Typography;
 
 function App() {
+  const [repoName, setRepoName] = useState<string>('');
+  const [repoList, setRepoList] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [repoListDetails, setRepoListDetails] = useState<RepoInfoResponse[]>([]);
   const [perPage, setPerPage] = useState(30);
-
-  useEffect(() => {
-    setLoading(true);
-    getRepoListInfo(
-      [
-        {
-          owner: 'react-native-elements',
-          repo: 'react-native-elements',
-          org: 'react-native-elements',
-        },
-        {
-          owner: 'GeekyAnts',
-          repo: 'NativeBase',
-          org: 'GeekyAnts',
-        },
-        {
-          owner: 'callstack',
-          repo: 'react-native-paper',
-          org: 'callstack',
-        },
-        {
-          owner: 'wix',
-          repo: 'react-native-ui-lib',
-          org: 'wix',
-        },
-      ],
-      perPage
-    ).then((res) => {
-      setLoading(false);
-      setRepoListDetails(res);
-    });
-  }, [perPage]);
 
   const columns: ColumnsType<RepoInfoResponse> = [
     {
@@ -113,12 +84,57 @@ function App() {
     },
   ];
 
+  const handleInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    setRepoName(e.target.value);
+  };
+
+  const handleInputPressEnter = () => {
+    if (repoList.includes(repoName)) {
+      setRepoName('');
+    } else if (/\w+\/\w+/.test(repoName)) {
+      setRepoList([...repoList, repoName]);
+      setRepoName('');
+    } else {
+      message.warning('输入不正确！');
+    }
+  };
+
+  const handleQuery = () => {
+    setLoading(true);
+    getRepoListInfo(repoList, perPage).then((res) => {
+      setLoading(false);
+      setRepoListDetails(res);
+    });
+  };
+
+  useEffect(() => {
+    handleQuery();
+  }, [perPage]);
+
   return (
     <Layout>
-      <Header className="header">
-        <h1>Github repository analysis</h1>
+      <Header style={{ background: '#fff' }}>
+        <Title>Github repository analysis</Title>
       </Header>
-      <Content className="content">
+      <Content style={{ minHeight: '100vh', background: '#fff', padding: '40px' }}>
+        <Input
+          style={{ marginBottom: '4px' }}
+          size="large"
+          value={repoName}
+          onChange={handleInputChange}
+          onPressEnter={handleInputPressEnter}
+        />
+        <div style={{ marginBottom: '12px' }}>
+          {repoList.map((repo) => (
+            <Tag
+              closable
+              key={repo}
+              onClose={() => setRepoList([...repoList.filter((item) => item !== repo)])}
+            >
+              {repo}
+            </Tag>
+          ))}
+        </div>
         <div>
           查询条数：
           <Select defaultValue={perPage} onChange={(val) => setPerPage(val)}>
@@ -126,6 +142,9 @@ function App() {
             <Select.Option value={50}>50</Select.Option>
             <Select.Option value={100}>100</Select.Option>
           </Select>
+          <Button style={{ marginLeft: '12px' }} type="primary" onClick={handleQuery}>
+            查询
+          </Button>
         </div>
         <Table
           loading={loading}

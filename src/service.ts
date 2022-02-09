@@ -99,11 +99,19 @@ async function getRepoInfo({
 }
 
 export async function getRepoListInfo(
-  repos: RepoInfoParameter[],
+  repoNameList: string[],
   perPage: number
 ): Promise<RepoInfoResponse[]> {
   const repoListInfo = await Promise.all(
-    repos.map((item) => getRepoInfo({ ...item, per_page: perPage }))
+    repoNameList.map((repoName) => {
+      const repoNameArray = repoName.split('/');
+      return getRepoInfo({
+        repo: repoNameArray[1],
+        org: repoNameArray[0],
+        owner: repoNameArray[0],
+        per_page: perPage,
+      });
+    })
   );
 
   return repoListInfo;
