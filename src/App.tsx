@@ -113,7 +113,7 @@ function App() {
 
   return (
     <Layout>
-      <Header style={{ background: '#fff' }}>
+      <Header style={{ background: '#fff', paddingTop: '12px' }}>
         <Title>Github repository analysis</Title>
       </Header>
       <Content style={{ minHeight: '100vh', background: '#fff', padding: '40px' }}>
