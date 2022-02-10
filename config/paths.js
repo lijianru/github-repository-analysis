@@ -18,7 +18,7 @@ const resolveApp = (relativePath) => path.resolve(appDirectory, relativePath);
 const publicUrlOrPath = getPublicUrlOrPath(
   process.env.NODE_ENV === 'development',
   require(resolveApp('package.json')).homepage,
-  'github-repository-analysis/'
+  process.env.PUBLIC_URL
 );
 
 const buildPath = process.env.BUILD_PATH || 'docs';
