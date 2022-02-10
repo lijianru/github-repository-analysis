@@ -9,11 +9,12 @@ const { Header, Footer, Content } = Layout;
 const { Title } = Typography;
 
 function App() {
-  const [repoName, setRepoName] = useState<string>('');
-  const [repoList, setRepoList] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [repoListDetails, setRepoListDetails] = useState<RepoInfoResponse[]>([]);
+  const [inputtedRepoName, setInputtedRepoName] = useState<string>('');
+  const [inputtedRepoNameList, setInputtedRepoNameList] = useState<string[]>([]);
   const [perPage, setPerPage] = useState(30);
+
+  const [loading, setLoading] = useState(false);
+  const [repoInfoDetailList, setRepoInfoDetailList] = useState<RepoInfoResponse[]>([]);
 
   const columns: ColumnsType<RepoInfoResponse> = [
     {
@@ -85,15 +86,15 @@ function App() {
   ];
 
   const handleInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setRepoName(e.target.value);
+    setInputtedRepoName(e.target.value);
   };
 
   const handleInputPressEnter = () => {
-    if (repoList.includes(repoName)) {
-      setRepoName('');
-    } else if (/\w+\/\w+/.test(repoName)) {
-      setRepoList([...repoList, repoName]);
-      setRepoName('');
+    if (inputtedRepoNameList.includes(inputtedRepoName)) {
+      setInputtedRepoName('');
+    } else if (/\w+\/\w+/.test(inputtedRepoName)) {
+      setInputtedRepoNameList([...inputtedRepoNameList, inputtedRepoName]);
+      setInputtedRepoName('');
     } else {
       message.warning('输入不正确！');
     }
@@ -101,9 +102,9 @@ function App() {
 
   const handleQuery = () => {
     setLoading(true);
-    getRepoListInfo(repoList, perPage).then((res) => {
+    getRepoListInfo(inputtedRepoNameList, perPage).then((res) => {
       setLoading(false);
-      setRepoListDetails(res);
+      setRepoInfoDetailList(res);
     });
   };
 
@@ -120,16 +121,19 @@ function App() {
         <Input
           style={{ marginBottom: '4px' }}
           size="large"
-          value={repoName}
+          value={inputtedRepoName}
           onChange={handleInputChange}
           onPressEnter={handleInputPressEnter}
         />
         <div style={{ marginBottom: '12px' }}>
-          {repoList.map((repo) => (
+          {inputtedRepoNameList.map((repo) => (
             <Tag
               closable
               key={repo}
-              onClose={() => setRepoList([...repoList.filter((item) => item !== repo)])}
+              style={{ fontSize: '14px' }}
+              onClose={() =>
+                setInputtedRepoNameList([...inputtedRepoNameList.filter((item) => item !== repo)])
+              }
             >
               {repo}
             </Tag>
@@ -142,14 +146,16 @@ function App() {
             <Select.Option value={50}>50</Select.Option>
             <Select.Option value={100}>100</Select.Option>
           </Select>
-          <Button style={{ marginLeft: '12px' }} type="primary" onClick={handleQuery}>
-            查询
-          </Button>
+          {!!inputtedRepoNameList.length && (
+            <Button style={{ marginLeft: '12px' }} type="primary" onClick={handleQuery}>
+              查询
+            </Button>
+          )}
         </div>
         <Table
           loading={loading}
           scroll={{ x: 1200 }}
-          dataSource={repoListDetails}
+          dataSource={repoInfoDetailList}
           columns={columns}
           rowKey={({ id }) => id}
         />
