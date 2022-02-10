@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import { max, min } from 'lodash';
 import {
   getRepoBaseInfo,
@@ -102,17 +103,22 @@ export async function getRepoListInfo(
   repoNameList: string[],
   perPage: number
 ): Promise<RepoInfoResponse[]> {
-  const repoListInfo = await Promise.all(
-    repoNameList.map((repoName) => {
-      const repoNameArray = repoName.split('/');
-      return getRepoInfo({
-        repo: repoNameArray[1],
-        org: repoNameArray[0],
-        owner: repoNameArray[0],
-        per_page: perPage,
-      });
-    })
-  );
+  try {
+    const repoListInfo = await Promise.all(
+      repoNameList.map((repoName) => {
+        const repoNameArray = repoName.split('/');
+        return getRepoInfo({
+          repo: repoNameArray[1],
+          org: repoNameArray[0],
+          owner: repoNameArray[0],
+          per_page: perPage,
+        });
+      })
+    );
 
-  return repoListInfo;
+    return repoListInfo;
+  } catch {
+    message.warn('似乎发生了一些错误，请重试！');
+    return [];
+  }
 }

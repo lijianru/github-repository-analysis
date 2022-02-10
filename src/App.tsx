@@ -113,24 +113,24 @@ function App() {
   }, [perPage]);
 
   return (
-    <Layout>
-      <Header style={{ background: '#fff', paddingTop: '12px' }}>
+    <Layout className="min-h-screen bg-white">
+      <Header className="bg-white pt-4">
         <Title>Github repository analysis</Title>
       </Header>
-      <Content style={{ minHeight: '100vh', background: '#fff', padding: '40px' }}>
+      <Content className="bg-white p-10 pt-2">
         <Input
-          style={{ marginBottom: '4px' }}
+          className="mb-1"
           size="large"
           value={inputtedRepoName}
           onChange={handleInputChange}
           onPressEnter={handleInputPressEnter}
         />
-        <div style={{ marginBottom: '12px' }}>
+        <div className="mb-2">
           {inputtedRepoNameList.map((repo) => (
             <Tag
+              className="align-middle leading-4"
               closable
               key={repo}
-              style={{ fontSize: '14px' }}
               onClose={() =>
                 setInputtedRepoNameList([...inputtedRepoNameList.filter((item) => item !== repo)])
               }
@@ -147,7 +147,7 @@ function App() {
             <Select.Option value={100}>100</Select.Option>
           </Select>
           {!!inputtedRepoNameList.length && (
-            <Button style={{ marginLeft: '12px' }} type="primary" onClick={handleQuery}>
+            <Button className="ml-3 bg-blue-500" type="primary" onClick={handleQuery}>
               查询
             </Button>
           )}
