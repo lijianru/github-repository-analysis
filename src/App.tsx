@@ -117,7 +117,7 @@ function App() {
       <Header className="bg-white pt-4">
         <Title>Github repository analysis</Title>
       </Header>
-      <Content className="bg-white p-10 pt-2">
+      <Content className="bg-white p-8 pt-3">
         <Input
           className="mb-1"
           size="large"
@@ -128,14 +128,13 @@ function App() {
         <div className="mb-2">
           {inputtedRepoNameList.map((repo) => (
             <Tag
-              className="align-middle leading-4"
               closable
               key={repo}
               onClose={() =>
                 setInputtedRepoNameList([...inputtedRepoNameList.filter((item) => item !== repo)])
               }
             >
-              {repo}
+              <b>{repo}</b>
             </Tag>
           ))}
         </div>
@@ -161,7 +160,9 @@ function App() {
         />
       </Content>
       <Footer>
-        <a href="lijianru.github.com">lijianru.github.com</a>
+        <a className="text-blue-500" href="lijianru.github.com">
+          lijianru.github.com
+        </a>
       </Footer>
     </Layout>
   );
