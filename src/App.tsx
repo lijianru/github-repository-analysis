@@ -83,6 +83,48 @@ function App() {
         );
       },
     },
+    {
+      title: 'Open Issues(Date)',
+      dataIndex: 'openIssue',
+      render: ({ date }) => {
+        return (
+          <div>
+            <div>最大值：{date.max}天</div>
+            <div>最小值：{date.min}天</div>
+            <div>80百分位值：{date.percentile80}天</div>
+            <div>90百分位值：{date.percentile90}天</div>
+          </div>
+        );
+      },
+    },
+    {
+      title: 'Open Issues(Comment)',
+      dataIndex: 'openIssue',
+      render: ({ comment }) => {
+        return (
+          <div>
+            <div>最大值：{comment.max}条</div>
+            <div>最小值：{comment.min}条</div>
+            <div>80百分位值：{comment.percentile80}条</div>
+            <div>90百分位值：{comment.percentile90}条</div>
+          </div>
+        );
+      },
+    },
+    {
+      title: 'Open Pull Request(Date)',
+      dataIndex: 'openPullRequest',
+      render: ({ date }) => {
+        return (
+          <div>
+            <div>最大值：{date.max}天</div>
+            <div>最小值：{date.min}天</div>
+            <div>80百分位值：{date.percentile80}天</div>
+            <div>90百分位值：{date.percentile90}天</div>
+          </div>
+        );
+      },
+    },
   ];
 
   const handleInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
