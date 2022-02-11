@@ -172,9 +172,12 @@ function App() {
             <Tag
               closable
               key={repo}
-              onClose={() =>
-                setInputtedRepoNameList([...inputtedRepoNameList.filter((item) => item !== repo)])
-              }
+              onClose={() => {
+                setInputtedRepoNameList([...inputtedRepoNameList.filter((item) => item !== repo)]);
+                setRepoInfoDetailList([
+                  ...repoInfoDetailList.filter(({ full_name }) => repo !== full_name),
+                ]);
+              }}
             >
               <b>{repo}</b>
             </Tag>

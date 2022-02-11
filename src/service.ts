@@ -26,7 +26,13 @@ export type Statistics = {
 };
 export type RepoInfoResponse = Pick<
   RepoBaseInfoResponse['data'],
-  'id' | 'html_url' | 'stargazers_count' | 'forks_count' | 'description' | 'created_at'
+  | 'id'
+  | 'html_url'
+  | 'stargazers_count'
+  | 'forks_count'
+  | 'description'
+  | 'created_at'
+  | 'full_name'
 > & {
   orgMemberList: RepoOrgMembersResponse['data'];
   contributorList: RepoContributorsResponse['data'];
@@ -70,7 +76,7 @@ async function getRepoInfo({
     getRepoPullRequests({ owner, repo, per_page, state: 'open' }),
   ]);
 
-  const { id, html_url, stargazers_count, forks_count, description, created_at } =
+  const { id, html_url, stargazers_count, forks_count, description, created_at, full_name } =
     repoBaseInfo.data;
 
   const currentTime = formatISO(new Date());
@@ -92,6 +98,7 @@ async function getRepoInfo({
 
   return {
     id,
+    full_name,
     created_at,
     html_url,
     stargazers_count,
