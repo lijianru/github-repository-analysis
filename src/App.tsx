@@ -184,8 +184,9 @@ function App() {
           ))}
         </div>
         <div>
-          查询条数：
+          查询数量（由近及远）：
           <Select defaultValue={perPage} onChange={(val) => setPerPage(val)}>
+            <Select.Option value={10}>10</Select.Option>
             <Select.Option value={30}>30</Select.Option>
             <Select.Option value={50}>50</Select.Option>
             <Select.Option value={100}>100</Select.Option>
