@@ -83,6 +83,48 @@ function App() {
         );
       },
     },
+    {
+      title: 'Open Issues(Date)',
+      dataIndex: 'openIssue',
+      render: ({ date }) => {
+        return (
+          <div>
+            <div>最大值：{date.max}天</div>
+            <div>最小值：{date.min}天</div>
+            <div>80百分位值：{date.percentile80}天</div>
+            <div>90百分位值：{date.percentile90}天</div>
+          </div>
+        );
+      },
+    },
+    {
+      title: 'Open Issues(Comment)',
+      dataIndex: 'openIssue',
+      render: ({ comment }) => {
+        return (
+          <div>
+            <div>最大值：{comment.max}条</div>
+            <div>最小值：{comment.min}条</div>
+            <div>80百分位值：{comment.percentile80}条</div>
+            <div>90百分位值：{comment.percentile90}条</div>
+          </div>
+        );
+      },
+    },
+    {
+      title: 'Open Pull Request(Date)',
+      dataIndex: 'openPullRequest',
+      render: ({ date }) => {
+        return (
+          <div>
+            <div>最大值：{date.max}天</div>
+            <div>最小值：{date.min}天</div>
+            <div>80百分位值：{date.percentile80}天</div>
+            <div>90百分位值：{date.percentile90}天</div>
+          </div>
+        );
+      },
+    },
   ];
 
   const handleInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -117,7 +159,7 @@ function App() {
       <Header className="bg-white pt-4">
         <Title>Github repository analysis</Title>
       </Header>
-      <Content className="bg-white p-10 pt-2">
+      <Content className="bg-white p-8 pt-3">
         <Input
           className="mb-1"
           size="large"
@@ -128,20 +170,23 @@ function App() {
         <div className="mb-2">
           {inputtedRepoNameList.map((repo) => (
             <Tag
-              className="align-middle leading-4"
               closable
               key={repo}
-              onClose={() =>
-                setInputtedRepoNameList([...inputtedRepoNameList.filter((item) => item !== repo)])
-              }
+              onClose={() => {
+                setInputtedRepoNameList([...inputtedRepoNameList.filter((item) => item !== repo)]);
+                setRepoInfoDetailList([
+                  ...repoInfoDetailList.filter(({ full_name }) => repo !== full_name),
+                ]);
+              }}
             >
-              {repo}
+              <b>{repo}</b>
             </Tag>
           ))}
         </div>
         <div>
-          查询条数：
+          查询数量（由近及远）：
           <Select defaultValue={perPage} onChange={(val) => setPerPage(val)}>
+            <Select.Option value={10}>10</Select.Option>
             <Select.Option value={30}>30</Select.Option>
             <Select.Option value={50}>50</Select.Option>
             <Select.Option value={100}>100</Select.Option>
@@ -161,7 +206,9 @@ function App() {
         />
       </Content>
       <Footer>
-        <a href="lijianru.github.com">lijianru.github.com</a>
+        <a className="text-blue-500" href="lijianru.github.com">
+          lijianru.github.com
+        </a>
       </Footer>
     </Layout>
   );

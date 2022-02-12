@@ -46,36 +46,36 @@ export async function getRepoContributors({
 }
 
 // 获取仓库最近关闭的30个issues
-export type RepoClosedIssuesParameter = Endpoints['GET /repos/{owner}/{repo}/issues']['parameters'];
-export type RepoClosedIssuesResponse = Endpoints['GET /repos/{owner}/{repo}/issues']['response'];
-export async function getRepoClosedIssues({
+export type RepoIssuesParameter = Endpoints['GET /repos/{owner}/{repo}/issues']['parameters'];
+export type RepoIssuesResponse = Endpoints['GET /repos/{owner}/{repo}/issues']['response'];
+export async function getRepoIssues({
   owner,
   repo,
+  state,
   per_page,
-}: RepoClosedIssuesParameter): Promise<RepoClosedIssuesResponse> {
+}: RepoIssuesParameter): Promise<RepoIssuesResponse> {
   return await octokit.request('GET /repos/{owner}/{repo}/issues', {
     owner,
     repo,
-    state: 'closed',
+    state,
     page: 1,
     per_page,
   });
 }
 
 // 获取仓库最近关闭的30个PR
-export type RepoClosedPullRequestsParameter =
-  Endpoints['GET /repos/{owner}/{repo}/pulls']['parameters'];
-export type RepoClosedPullRequestsResponse =
-  Endpoints['GET /repos/{owner}/{repo}/pulls']['response'];
-export async function getRepoClosedPullRequests({
+export type RepoPullRequestsParameter = Endpoints['GET /repos/{owner}/{repo}/pulls']['parameters'];
+export type RepoPullRequestsResponse = Endpoints['GET /repos/{owner}/{repo}/pulls']['response'];
+export async function getRepoPullRequests({
   owner,
   repo,
+  state,
   per_page,
-}: RepoClosedPullRequestsParameter): Promise<RepoClosedPullRequestsResponse> {
+}: RepoPullRequestsParameter): Promise<RepoPullRequestsResponse> {
   return await octokit.request('GET /repos/{owner}/{repo}/pulls', {
     owner,
     repo,
-    state: 'closed',
+    state,
     page: 1,
     per_page,
   });

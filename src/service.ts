@@ -2,8 +2,8 @@ import { message } from 'antd';
 import { max, min } from 'lodash';
 import {
   getRepoBaseInfo,
-  getRepoClosedIssues,
-  getRepoClosedPullRequests,
+  getRepoIssues,
+  getRepoPullRequests,
   getRepoContributors,
   getRepoOrgMembers,
   RepoBaseInfoParameter,
@@ -13,6 +13,7 @@ import {
   RepoOrgMembersResponse,
 } from './api';
 import { calculationInterval, percentile } from './helpers';
+import { formatISO } from 'date-fns';
 
 export type RepoInfoParameter = Pick<RepoBaseInfoParameter, 'owner' | 'repo'> &
   Pick<RepoOrgMembersParameter, 'org' | 'per_page'>;
@@ -25,7 +26,13 @@ export type Statistics = {
 };
 export type RepoInfoResponse = Pick<
   RepoBaseInfoResponse['data'],
-  'id' | 'html_url' | 'stargazers_count' | 'forks_count' | 'description' | 'created_at'
+  | 'id'
+  | 'html_url'
+  | 'stargazers_count'
+  | 'forks_count'
+  | 'description'
+  | 'created_at'
+  | 'full_name'
 > & {
   orgMemberList: RepoOrgMembersResponse['data'];
   contributorList: RepoContributorsResponse['data'];
@@ -36,6 +43,13 @@ export type RepoInfoResponse = Pick<
   closedPullRequest: {
     date: Statistics;
   };
+  openIssue: {
+    date: Statistics;
+    comment: Statistics;
+  };
+  openPullRequest: {
+    date: Statistics;
+  };
 };
 
 async function getRepoInfo({
@@ -44,29 +58,47 @@ async function getRepoInfo({
   org,
   per_page,
 }: RepoInfoParameter): Promise<RepoInfoResponse> {
-  const [repoBaseInfo, repoOrgMembers, repoContributors, repoClosedIssues, repoClosedPullRequests] =
-    await Promise.all([
-      getRepoBaseInfo({ owner, repo }),
-      getRepoOrgMembers({ org }),
-      getRepoContributors({ owner, repo, per_page }),
-      getRepoClosedIssues({ owner, repo, per_page }),
-      getRepoClosedPullRequests({ owner, repo, per_page }),
-    ]);
+  const [
+    repoBaseInfo,
+    repoOrgMembers,
+    repoContributors,
+    repoClosedIssues,
+    repoClosedPullRequests,
+    repoOpenIssues,
+    repoOpenPullRequests,
+  ] = await Promise.all([
+    getRepoBaseInfo({ owner, repo }),
+    getRepoOrgMembers({ org }),
+    getRepoContributors({ owner, repo, per_page }),
+    getRepoIssues({ owner, repo, per_page, state: 'closed' }),
+    getRepoPullRequests({ owner, repo, per_page, state: 'closed' }),
+    getRepoIssues({ owner, repo, per_page, state: 'open' }),
+    getRepoPullRequests({ owner, repo, per_page, state: 'open' }),
+  ]);
 
-  const { id, html_url, stargazers_count, forks_count, description, created_at } =
+  const { id, html_url, stargazers_count, forks_count, description, created_at, full_name } =
     repoBaseInfo.data;
 
+  const currentTime = formatISO(new Date());
   const repoClosedIssuesIntervalList = repoClosedIssues.data.map(({ created_at, closed_at }) =>
     calculationInterval(created_at, closed_at!)
   );
+  const repoOpenIssuesIntervalList = repoOpenIssues.data.map(({ created_at, closed_at }) =>
+    calculationInterval(created_at, closed_at || currentTime)
+  );
   const repoClosedIssuesCommentCountList = repoClosedIssues.data.map(({ comments }) => comments);
+  const repoOpenIssuesCommentCountList = repoOpenIssues.data.map(({ comments }) => comments);
 
   const repoClosedPullRequestIntervalList = repoClosedPullRequests.data.map(
     ({ created_at, closed_at }) => calculationInterval(created_at, closed_at!)
   );
+  const repoOpenPullRequestIntervalList = repoOpenPullRequests.data.map(
+    ({ created_at, closed_at }) => calculationInterval(created_at, closed_at || currentTime)
+  );
 
   return {
     id,
+    full_name,
     created_at,
     html_url,
     stargazers_count,
@@ -94,6 +126,28 @@ async function getRepoInfo({
         min: min(repoClosedPullRequestIntervalList)!,
         percentile80: percentile(repoClosedPullRequestIntervalList)!,
         percentile90: percentile(repoClosedPullRequestIntervalList)!,
+      },
+    },
+    openIssue: {
+      date: {
+        max: max(repoOpenIssuesIntervalList)!,
+        min: min(repoOpenIssuesIntervalList)!,
+        percentile80: percentile(repoOpenIssuesIntervalList)!,
+        percentile90: percentile(repoOpenIssuesIntervalList)!,
+      },
+      comment: {
+        max: max(repoOpenIssuesCommentCountList)!,
+        min: min(repoClosedIssuesCommentCountList)!,
+        percentile80: percentile(repoOpenIssuesCommentCountList)!,
+        percentile90: percentile(repoOpenIssuesCommentCountList)!,
+      },
+    },
+    openPullRequest: {
+      date: {
+        max: max(repoOpenPullRequestIntervalList)!,
+        min: min(repoOpenPullRequestIntervalList)!,
+        percentile80: percentile(repoOpenPullRequestIntervalList)!,
+        percentile90: percentile(repoOpenPullRequestIntervalList)!,
       },
     },
   };
