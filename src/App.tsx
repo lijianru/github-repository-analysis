@@ -4,6 +4,7 @@ import './App.css';
 import { getRepoListInfo, RepoInfoResponse } from './service';
 import { ColumnsType } from 'antd/es/table';
 import { format } from 'date-fns';
+import { GithubCorners } from './GithubCorners';
 
 const { Header, Footer, Content } = Layout;
 const { Title } = Typography;
@@ -142,12 +143,11 @@ function App() {
     }
   };
 
-  const handleQuery = () => {
+  const handleQuery = async () => {
     setLoading(true);
-    getRepoListInfo(inputtedRepoNameList, perPage).then((res) => {
-      setLoading(false);
-      setRepoInfoDetailList(res);
-    });
+    const result = await getRepoListInfo(inputtedRepoNameList, perPage);
+    setLoading(false);
+    setRepoInfoDetailList(result);
   };
 
   useEffect(() => {
@@ -156,6 +156,7 @@ function App() {
 
   return (
     <Layout className="min-h-screen bg-white">
+      <GithubCorners />
       <Header className="bg-white pt-4">
         <Title>Github repository analysis</Title>
       </Header>
@@ -205,9 +206,10 @@ function App() {
           rowKey={({ id }) => id}
         />
       </Content>
-      <Footer>
-        <a className="text-blue-500" href="lijianru.github.com">
-          lijianru.github.com
+      <Footer className="text-center">
+        Copyright © 2021-present{' '}
+        <a className="text-blue-500" href="https://github.com/lijianru">
+          lijianru
         </a>
       </Footer>
     </Layout>
