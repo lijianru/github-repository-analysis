@@ -167,6 +167,7 @@ function App() {
           value={inputtedRepoName}
           onChange={handleInputChange}
           onPressEnter={handleInputPressEnter}
+          placeholder="请输入完整的仓库名（例如：facebook/react、spring-projects/spring-boot）后按回车键"
         />
         <div className="mb-2">
           {inputtedRepoNameList.map((repo) => (
