@@ -19,7 +19,7 @@ function App() {
 
   const columns: ColumnsType<RepoInfoResponse> = [
     {
-      title: '仓库地址',
+      title: 'Repository URL',
       dataIndex: 'html_url',
       width: 150,
       render: (html_url) => <a>{html_url}</a>,
@@ -29,7 +29,7 @@ function App() {
       dataIndex: 'stargazers_count',
     },
     {
-      title: '创建时间',
+      title: 'Create Date',
       dataIndex: 'created_at',
       render: (created_at) => <b>{format(new Date(created_at), 'yyyy/M/d')}</b>,
     },
@@ -48,10 +48,10 @@ function App() {
       render: ({ date }) => {
         return (
           <div>
-            <div>最大值：{date.max}天</div>
-            <div>最小值：{date.min}天</div>
-            <div>80百分位值：{date.percentile80}天</div>
-            <div>90百分位值：{date.percentile90}天</div>
+            <div>Max: {date.max} day(s)</div>
+            <div>Min: {date.min} day(s)</div>
+            <div>80th percentile value: {date.percentile80} day(s)</div>
+            <div>90th percentile value: {date.percentile90} day(s)</div>
           </div>
         );
       },
@@ -62,10 +62,10 @@ function App() {
       render: ({ comment }) => {
         return (
           <div>
-            <div>最大值：{comment.max}条</div>
-            <div>最小值：{comment.min}条</div>
-            <div>80百分位值：{comment.percentile80}条</div>
-            <div>90百分位值：{comment.percentile90}条</div>
+            <div>Max: {comment.max} comment(s)/PR</div>
+            <div>Min: {comment.min} comment(s)/PR</div>
+            <div>80th percentile value: {comment.percentile80} comment(s)/PR</div>
+            <div>90th percentile value: {comment.percentile90} comment(s)/PR</div>
           </div>
         );
       },
@@ -76,10 +76,10 @@ function App() {
       render: ({ date }) => {
         return (
           <div>
-            <div>最大值：{date.max}天</div>
-            <div>最小值：{date.min}天</div>
-            <div>80百分位值：{date.percentile80}天</div>
-            <div>90百分位值：{date.percentile90}天</div>
+            <div>Max: {date.max} day(s)</div>
+            <div>Min: {date.min} day(s)</div>
+            <div>80th percentile value: {date.percentile80} day(s)</div>
+            <div>90th percentile value: {date.percentile90} day(s)</div>
           </div>
         );
       },
@@ -90,10 +90,10 @@ function App() {
       render: ({ date }) => {
         return (
           <div>
-            <div>最大值：{date.max}天</div>
-            <div>最小值：{date.min}天</div>
-            <div>80百分位值：{date.percentile80}天</div>
-            <div>90百分位值：{date.percentile90}天</div>
+            <div>Max: {date.max} day(s)</div>
+            <div>Min: {date.min} day(s)</div>
+            <div>80th percentile value: {date.percentile80} day(s)</div>
+            <div>90th percentile value: {date.percentile90} day(s)</div>
           </div>
         );
       },
@@ -104,10 +104,10 @@ function App() {
       render: ({ comment }) => {
         return (
           <div>
-            <div>最大值：{comment.max}条</div>
-            <div>最小值：{comment.min}条</div>
-            <div>80百分位值：{comment.percentile80}条</div>
-            <div>90百分位值：{comment.percentile90}条</div>
+            <div>Max: {comment.max} comment(s)/PR</div>
+            <div>Min: {comment.min} comment(s)/PR</div>
+            <div>80th percentile value: {comment.percentile80} comment(s)/PR</div>
+            <div>90th percentile value: {comment.percentile90} comment(s)/PR</div>
           </div>
         );
       },
@@ -118,10 +118,10 @@ function App() {
       render: ({ date }) => {
         return (
           <div>
-            <div>最大值：{date.max}天</div>
-            <div>最小值：{date.min}天</div>
-            <div>80百分位值：{date.percentile80}天</div>
-            <div>90百分位值：{date.percentile90}天</div>
+            <div>Max: {date.max} day(s)</div>
+            <div>Min: {date.min} day(s)</div>
+            <div>80th percentile value: {date.percentile80} day(s)</div>
+            <div>90th percentile value: {date.percentile90} day(s)</div>
           </div>
         );
       },
@@ -139,7 +139,7 @@ function App() {
       setInputtedRepoNameList([...inputtedRepoNameList, inputtedRepoName]);
       setInputtedRepoName('');
     } else {
-      message.warning('输入不正确！');
+      message.warning('Incorrect input!');
     }
   };
 
@@ -167,7 +167,7 @@ function App() {
           value={inputtedRepoName}
           onChange={handleInputChange}
           onPressEnter={handleInputPressEnter}
-          placeholder="请输入完整的仓库名（例如：facebook/react、spring-projects/spring-boot）后按回车键"
+          placeholder="Please enter the full repository name (eg: facebook/react, spring-projects/spring-boot) and press enter"
         />
         <div className="mb-2">
           {inputtedRepoNameList.map((repo) => (
@@ -175,9 +175,15 @@ function App() {
               closable
               key={repo}
               onClose={() => {
-                setInputtedRepoNameList([...inputtedRepoNameList.filter((item) => item !== repo)]);
+                setInputtedRepoNameList([
+                  ...inputtedRepoNameList.filter(
+                    (item) => item.toLowerCase() !== repo.toLowerCase()
+                  ),
+                ]);
                 setRepoInfoDetailList([
-                  ...repoInfoDetailList.filter(({ full_name }) => repo !== full_name),
+                  ...repoInfoDetailList.filter(
+                    ({ full_name }) => repo.toLowerCase() !== full_name.toLowerCase()
+                  ),
                 ]);
               }}
             >
@@ -186,7 +192,7 @@ function App() {
           ))}
         </div>
         <div>
-          查询数量（由近及远）：
+          Number of queries (from near to far):&nbsp;
           <Select defaultValue={perPage} onChange={(val) => setPerPage(val)}>
             <Select.Option value={10}>10</Select.Option>
             <Select.Option value={30}>30</Select.Option>
@@ -195,7 +201,7 @@ function App() {
           </Select>
           {!!inputtedRepoNameList.length && (
             <Button className="ml-3 bg-blue-500" type="primary" onClick={handleQuery}>
-              查询
+              Search
             </Button>
           )}
         </div>
