@@ -62,10 +62,10 @@ function App() {
       render: ({ comment }) => {
         return (
           <div>
-            <div>Max: {comment.max} comment(s)/PR</div>
-            <div>Min: {comment.min} comment(s)/PR</div>
-            <div>80th percentile value: {comment.percentile80} comment(s)/PR</div>
-            <div>90th percentile value: {comment.percentile90} comment(s)/PR</div>
+            <div>Max: {comment.max} comment(s)/Issue</div>
+            <div>Min: {comment.min} comment(s)/Issue</div>
+            <div>80th percentile value: {comment.percentile80} comment(s)/Issue</div>
+            <div>90th percentile value: {comment.percentile90} comment(s)/Issue</div>
           </div>
         );
       },
@@ -104,10 +104,10 @@ function App() {
       render: ({ comment }) => {
         return (
           <div>
-            <div>Max: {comment.max} comment(s)/PR</div>
-            <div>Min: {comment.min} comment(s)/PR</div>
-            <div>80th percentile value: {comment.percentile80} comment(s)/PR</div>
-            <div>90th percentile value: {comment.percentile90} comment(s)/PR</div>
+            <div>Max: {comment.max} comment(s)/Issue</div>
+            <div>Min: {comment.min} comment(s)/Issue</div>
+            <div>80th percentile value: {comment.percentile80} comment(s)/Issue</div>
+            <div>90th percentile value: {comment.percentile90} comment(s)/Issue</div>
           </div>
         );
       },
